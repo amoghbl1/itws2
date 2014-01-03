@@ -1,0 +1,54 @@
+
+Assignment 1
+-------------
+Information of a registered user is recorded in a master dictionary:
+{user_id: (name, place, date_of_birth)}
+
+A registered user's list of friends is represented as a tuple:
+(reg_user_id, [ user_id_1, ..., user_id_n ]) where n >= 0
+
+The messages posted by a user are grouped as follows:
+(user_id, [msg_1, ..., msg_n]) where n >= 0
+
+Each message has four components:
+(message_id, text, sent_date, sent_time)
+
+Implement the following procedures:
+    get_friends(user_id)
+    get_friends_of_friends(user_id)
+    
+    send_message(my_id, friend_id, msg)
+    send_message_bulk(my_id, [friend_id_1, ..., friend_id_n], msg)
+
+    get_messages_from_friend(my_id, friend_id)
+    get_messaged_from_all_friends(my_id, friend_id)
+    get_birth_day_messages(my_id)
+
+    delete_message(my_id, msg_id)
+    delete_messages(my_id, (msg_id_1, ..., msg_id_n)) where n >= 0  
+    delete_messaged_from_friend(my_id, friend_id)
+
+
+    
+Assignment 2
+--------------
+A 2D Cartesian coordinate is represented as a tuple:
+(x, y)
+
+A vector is represented by two points:
+(p1, p2) where p1 is a tuple (x1, y1) and p2 is also a tuple (x2, y2)
+
+Implement the following procedures:
+    length(vector)
+    normalize(vector)
+    dot_product(vector, vector)
+    cross_product(vector)
+    
+
+Assignment 3
+--------------
+
+Complete the Phonenum and Contacts data types that were discussed in the lecture sessions. Add country code tp the Phonenum type.
+
+
+
