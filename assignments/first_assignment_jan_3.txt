@@ -1,4 +1,3 @@
-
 Assignment 1
 -------------
 Information of a registered user is recorded in a master dictionary:
@@ -48,7 +47,8 @@ Implement the following procedures:
 Assignment 3
 --------------
 
-Complete the Phonenum and Contacts data types that were discussed in the lecture sessions. Add country code tp the Phonenum type.
+Complete the Phonenum and Contacts data types that were discussed in the 
+lecture sessions. Add country code to the Phonenum type.
 
 
 
