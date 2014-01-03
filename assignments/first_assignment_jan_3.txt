@@ -1,4 +1,4 @@
-Assignment 1
+Exercise 1
 -------------
 Information of a registered user is recorded in a master dictionary:
 {user_id: (name, place, date_of_birth)}
@@ -29,7 +29,7 @@ Implement the following procedures:
 
 
     
-Assignment 2
+Exercise 2
 --------------
 A 2D Cartesian coordinate is represented as a tuple:
 (x, y)
@@ -44,11 +44,13 @@ Implement the following procedures:
     cross_product(vector)
     
 
-Assignment 3
---------------
 
+Exercise 3
+--------------
 Complete the Phonenum and Contacts data types that were discussed in the 
-lecture sessions. Add country code to the Phonenum type.
+lecture sessions on Jan-4, Saturday. Add country code to the Phonenum type.
+Add type checking and data validation to Phonenum. In addition, report errors with appropriate exceptions and handle such exceptions in Contacts module.
+
 
 
 
