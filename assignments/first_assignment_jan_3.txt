@@ -49,7 +49,9 @@ Exercise 3
 --------------
 Complete the Phonenum and Contacts data types that were discussed in the 
 lecture sessions on Jan-4, Saturday. Add country code to the Phonenum type.
-Add type checking and data validation to Phonenum. In addition, report errors with appropriate exceptions and handle such exceptions in Contacts module.
+Add type checking and data validation to Phonenum. In addition, report 
+errors with appropriate exceptions and handle such exceptions in Contacts 
+module.
 
 
 
