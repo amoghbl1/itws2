@@ -41,7 +41,7 @@ Implement the following procedures:
     length(vector)
     normalize(vector)
     dot_product(vector, vector)
-    cross_product(vector)
+    cross_product(vector, vector)
     
 
 
