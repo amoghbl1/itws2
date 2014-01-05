@@ -34,14 +34,14 @@ Exercise 2
 A 3D Cartesian coordinate is represented as a tuple:
 (x, y, z)
 
-A vector is represented by two points:
+A vector is represented by a tuple of two points:
 (p1, p2) where p1 is a tuple (x1, y1, z1) and p2 is also a tuple (x2, y2, z2)
 
 Implement the following procedures:
     length(vector)
-    normalize(vector)
+    normalize(vector) : returns a vector
     dot_product(vector, vector)
-    cross_product(vector, vector)
+    cross_product(vector, vector) : returns a vector (p1, p2) where p1 is (0, 0, 0)
     
 
 
