@@ -39,7 +39,7 @@ A vector is represented by a tuple of two points:
 
 Implement the following procedures:
     length(vector)
-    normalize(vector) : returns a vector
+    normalize(vector) : returns a vector (p1, p2) where p1 is (0, 0, 0)
     dot_product(vector, vector)
     cross_product(vector, vector) : returns a vector (p1, p2) where p1 is (0, 0, 0)
     
