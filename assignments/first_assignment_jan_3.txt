@@ -108,7 +108,7 @@ lecture sessions on Jan-4, Saturday. The following enhancements are mandatory:
   (A) the ten digit phone number should consist of only digits.
   (B) phone number should allow an optional country code.
   (C) a new procedure:
-      update_contact_number(contact_name, old_number, new_number)
+      update_contact_number(contacts, contact_name, old_number, new_number)
         -- updates the old number with the new one. old number will be
            no longer accessible after a successful update.
         -- returns True on success and False on failure.
