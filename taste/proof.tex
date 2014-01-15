@@ -26,6 +26,8 @@
 \definecolor{green}{RGB}{0, 150, 0}
 \definecolor{lightgreen}{RGB}{220, 230, 140}
 \definecolor{lightorange}{RGB}{249, 150, 107}
+\definecolor{darkorange}{RGB}{255, 140, 95}
+%\definecolor{darkorange}{RGB}{250, 180, 100} VERY NICE COLOR!
 \definecolor{lightbrown}{RGB}{249, 203, 156}
 \definecolor{black}{RGB}{0, 0, 0}
 \definecolor{background}{RGB}{235, 235, 235}
@@ -116,7 +118,7 @@ Let us begin with the trivial definition of two helper functions. The \texttt{bl
     backgroundcolor=\color{background},
     stringstyle=\color{red},
     identifierstyle=\color{black},
-    procnamekeys={def}}	
+    procnamekeys={def}} 
 \noindent\begin{lstlisting}
 def block_begin(line): return line == '{\n'
 def block_end(line):   return line == '}\n'
@@ -178,12 +180,12 @@ We can imagine the meaning of a program to be various invariants and logical rel
 Ideally, we would like the program design to be guided by this principle. WHen it is not possible for some reason, we can use this very idea to figure out precisely how the execution of a program proceeds in its state space. With a precise knowledge of the requirements, we may attempt to find out logical relationships among state variables and states of an executing program. And this is what we wish to show in the following subsections. 
 
 \subsection{The first few cycles}
-In the card shown below, we have highlighted two sections of the program. Our idea is to informally develop a few meaningful logical relations among the variables of this program.
+In the card shown below, we have highlighted two sections of the program. Our idea is to find out meaningful logical propositions that relate the values of variables. This proposition as asserted to hold whenever control reaches that point in the execution of the program. Most variables used in these logical propositions come from the program. However, we will see that we ``discover" a few variables in order to explicate finer details of Python.
 
 \vspace*{10pt}\noindent\begin{tabular}{@{}ll}
 {\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
 \begin{lstlisting}
-def collect_fun_names(src):
+def collect_proc_names(src):
   proc_names = []
   prev_line = None
 \end{lstlisting}}
@@ -191,9 +193,13 @@ def collect_fun_names(src):
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   for line in src:
-    if open_curly(line):
 \end{lstlisting}}
-& $ 0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
+& $ (i = 0 \,\wedge\, prev\_line = \bot) \,\vee\,$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+     if open_curly(line):
+\end{lstlisting}}
+&$\ \ \ (1 \le i \,\wedge\, prev\_line = src[i-1] \,\wedge\, line = src[i])$\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
       pn = prev_line
@@ -202,20 +208,21 @@ def collect_fun_names(src):
           proc_names.append(pn)
           break
 \end{lstlisting}}
-& $$\\
+&\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
     else:
-\end{lstlisting}}
-& $ i = 0 \Rightarrow prev\_line = \bot$\vspace*{-0.8pt}\\
-{
-\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
       prev_line = line
 \end{lstlisting}}
-& $ 0 < i \Rightarrow (prev\_line \ne \bot)$\\
+& $ 0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
+%{
+%\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+%      prev_line = line
+%\end{lstlisting}}
+%& \\
 {
 \begin{lstlisting}[firstnumber=last]
-  return fun_names
+  return proc_names
 \end{lstlisting}}
 &\\
 \end{tabular}\vspace*{0.3mm}\\
@@ -228,7 +235,7 @@ What will be the state of the program variables when a open curly bracket marks 
 \vspace*{12pt}\noindent\begin{tabular}{@{}ll}
 {\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
 \begin{lstlisting}
-def collect_fun_names(src):
+def collect_proc_names(src):
   proc_names = []
   prev_line = None
 \end{lstlisting}}&\\
@@ -236,14 +243,19 @@ def collect_fun_names(src):
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   for line in src:
 \end{lstlisting}}
-& $ 0 < i < |src| \Rightarrow prev\_line \ne \bot $\\
+& $ (i = 0 \,\wedge\, prev\_line = \bot) \,\vee$\vspace*{-0.7pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   if open_curly(line):
+\end{lstlisting}}
+&
+$ \ \ \ (1 \le i \,\wedge\, prev\_line = src[i - 1])$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
       pn = prev_line
 \end{lstlisting}}
 &
-$prev\_line = src[i - 1] \,\wedge\, src[i] = \mathtt{'\{'}$\\
+$ 0 \le i \le |src| \,\wedge \, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$\vspace*{-0.7pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
       for line in src:
@@ -258,10 +270,10 @@ $prev\_line = src[i - 1] \,\wedge\, src[i] = \mathtt{'\{'}$\\
     else:
       prev_line = line
 \end{lstlisting}}
-&$ i = 0 \Rightarrow (prev\_line = \bot \,\wedge\, line = src[0])$\\
+&$ 0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
 {
 \begin{lstlisting}[firstnumber=last]
-  return fun_names
+  return proc_names
 \end{lstlisting}}
 &\\
 \end{tabular}\\
@@ -274,13 +286,13 @@ $prev\_line = src[i - 1] \,\wedge\, src[i] = \mathtt{'\{'}$\\
 
 
 %
-% --------------------- THE THiRd CYCLE BEGINS HERE ------------
+% --------------------- THE THiRD CYCLE BEGINS HERE ------------
 %
 
 \vspace*{12pt}\noindent\begin{tabular}{@{}ll}
 {\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
 \begin{lstlisting}
-def collect_fun_names(src):
+def collect_proc_names(src):
   proc_names = []
   prev_line = None
 \end{lstlisting}}&\\
@@ -288,35 +300,48 @@ def collect_fun_names(src):
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   for line in src:
 \end{lstlisting}}
-& $ 0 < i < |src| \Rightarrow prev\_line \ne \bot $\\
+& $(i = 0 \,\wedge\, prev\_line = \bot) \,\vee$\vspace*{-0.7pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   if open_curly(line):
+\end{lstlisting}}
+&
+$\ \ \ (1 \le i \,\wedge\, prev\_line = src[i - 1])$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
       pn = prev_line
 \end{lstlisting}}
 &
-$prev\_line = src[i - 1] \,\wedge\, src[i] = \mathtt{'\{'}$\\
+$ 0 \le i \le |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$\vspace*{-0.7pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
       for line in src:
 \end{lstlisting}}
 &\\
 {
-\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
         if close_curly(line):
+\end{lstlisting}}
+& $ $\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
           proc_names.append(pn)
+\end{lstlisting}}
+& $ 1 < i \,\wedge\, src[i] = \mathtt{'\}'} \,\wedge\,$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
           break
 \end{lstlisting}}
-& $ 1 < i < |src| \Rightarrow  (0 \le j < i \,\wedge\, src[j] =  \mathtt{'\{'})$\\
+& $ \ \ \ \ (\exists \,j.\,0 < j < i \,\wedge\, src[j] =  \mathtt{'\{'})$\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightbrown}]
     else:
       prev_line = line
 \end{lstlisting}}
-&$ i = 0 \Rightarrow (prev\_line = \bot \,\wedge\, line = src[0])$\\
+&$0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
 {
 \begin{lstlisting}[firstnumber=last]
-  return fun_names
+  return proc_names
 \end{lstlisting}}
 &\\
 \end{tabular}\\
@@ -324,7 +349,7 @@ $prev\_line = src[i - 1] \,\wedge\, src[i] = \mathtt{'\{'}$\\
 
 
 %
-% --------------------- THE THird CYCLE ENDS HERE ------------
+% --------------------- THE THiRD CYCLE ENDS HERE ------------
 %
 
 
@@ -332,7 +357,7 @@ $prev\_line = src[i - 1] \,\wedge\, src[i] = \mathtt{'\{'}$\\
 \noindent\hspace*{-0.5em}\begin{tabular}{@{}ll@{}}
 {\noindent\lstset{language=Python, basicstyle=\ttfamily\small, numbers=left}
 \noindent\begin{lstlisting}
-def collect_fun_names(src):
+def collect_proc_names(src):
   proc_names = []
 \end{lstlisting}}
 &\\
@@ -384,7 +409,7 @@ def collect_fun_names(src):
 \end{lstlisting}}
 &\\
 {\noindent\hspace*{0.35em}\begin{lstlisting}[firstnumber=last]
-  return fun_names
+  return proc_names
 \end{lstlisting}}
 
 \end{tabular}
