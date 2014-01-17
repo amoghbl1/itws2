@@ -120,8 +120,8 @@ Let us begin with the trivial definition of two helper functions. The \texttt{bl
     identifierstyle=\color{black},
     procnamekeys={def}} 
 \noindent\begin{lstlisting}
-def block_begin(line): return line == '{\n'
-def block_end(line):   return line == '}\n'
+def open_curly(line): return line == '{\n'
+def close_curly(line):   return line == '}\n'
 \end{lstlisting}
 
 Let us now turn our attention to \texttt{collect\_fun\_names} that teases out procedure names by recognizing procedure definitions in the input text. The \texttt{src} argument of \texttt{collect\_fun\_names} is a Python file object representing the external text file. This function returns a list of procedure names found in the input. 
@@ -134,10 +134,10 @@ def collect_proc_names(src):
   prev_line = None
 
   for line in src:
-    if block_begin(line):
+    if open_curly(line):
       pn = prev_line
       for line in src:
-        if block_end(line):
+        if close_culy(line):
           proc_names.append(pn)
           break
     else:
@@ -289,7 +289,8 @@ $ 0 \le i \le |src| \,\wedge \, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])
 % --------------------- THE THiRD CYCLE BEGINS HERE ------------
 %
 
-\vspace*{12pt}\noindent\begin{tabular}{@{}ll}
+\vspace*{12pt}\noindent
+\begin{tabular}{@{}ll}
 {\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
 \begin{lstlisting}
 def collect_proc_names(src):
@@ -300,19 +301,19 @@ def collect_proc_names(src):
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   for line in src:
 \end{lstlisting}}
-& $(i = 0 \,\wedge\, prev\_line = \bot) \,\vee$\vspace*{-0.7pt}\\
+& $(i = 0 \,\wedge\, prev\_line = \bot) \,\vee$\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
   if open_curly(line):
 \end{lstlisting}}
 &
-$\ \ \ (1 \le i \,\wedge\, prev\_line = src[i - 1])$\vspace*{-0.7pt}\\
+$\ \ \ (1 \le i \,\wedge\, prev\_line = src[i - 1])$\vspace*{-0.5pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
       pn = prev_line
 \end{lstlisting}}
 &
-$ 0 \le i \le |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$\vspace*{-0.7pt}\\
+$ 0 \le i < |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
       for line in src:
@@ -322,17 +323,18 @@ $ 0 \le i \le |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
         if close_curly(line):
 \end{lstlisting}}
-& $ $\vspace*{-0.7pt}\\
+& $(i+1) \le j < |src| \,\wedge\, line = src[j]$\vspace*{-0.6pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
           proc_names.append(pn)
 \end{lstlisting}}
-& $ 1 < i \,\wedge\, src[i] = \mathtt{'\}'} \,\wedge\,$\vspace*{-0.7pt}\\
+& $  (i+1) \le j < |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, src[j] = \mathtt{'\}'}$\vspace*{-0.5pt}\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
           break
 \end{lstlisting}}
-& $ \ \ \ \ (\exists \,j.\,0 < j < i \,\wedge\, src[j] =  \mathtt{'\{'})$\\
+%& $ \ \ \ \ (\exists \,j.\,0 < j < i \,\wedge\, src[j] =  \mathtt{'\{'})$\\
+&\\
 {
 \begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightbrown}]
     else:
