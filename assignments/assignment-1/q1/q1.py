@@ -66,5 +66,20 @@ def get_messages_from_friend(receiver_id, friend_id):
 	for i in Messages[receiver_id]:
 		for j in i:
 			if j.__contains__(friend_id):
-				return_tupple = return_tupple + j
+				return_tupple += j
 	return receiver_tupple
+
+def get_messages_from_all_friends(receiver_id):
+	return_tupple = ()
+	for friend in Acquaintances[receiver_id]:
+		return_tupple += get_messages_from_friend(receiver_id, friend)
+	return return_tupple
+
+def get_birth_day_messages(receiver_id):
+	birthday = Users[receiver_id][2]
+	return_tupple = ()
+	for messages in get_messages_from_all_friends(receiver_id):
+		for message in messages:
+			if messages.__contains__(birthday):
+				return_tupple += messages
+	return return_tupple
