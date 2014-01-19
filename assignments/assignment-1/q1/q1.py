@@ -87,7 +87,7 @@ def get_birth_day_messages(receiver_id):
 def delete_message(user_id, msg_id):
 	for messages in get_messages_from_all_friends(user_id):
 		for message in messages:
-			if message.__contains__(msg_id)
+			if message.__contains__(msg_id):
 				messages.remove(message)
 
 def delete_messages(user_id, messages_tupple):
