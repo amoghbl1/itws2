@@ -94,4 +94,9 @@ def delete_messages(user_id, messages_tupple):
 	for message in messages_tupple:
 		delete_message(user_id, message)
 
+def delete_all_messages(user_id):
+	Messages[user_id] = []
+
+def delete_messages_from_friend(receiver_id, friend_id):
+	for messages in Messages[receiver_id]:
 
