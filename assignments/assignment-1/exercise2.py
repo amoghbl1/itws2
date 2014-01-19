@@ -20,9 +20,9 @@ def normalize(vector):
 		y = y*-1
 	"""
 	if length_of_vector != 0:
-		return (x/length_of_vector, y/length_of_vector, z/length_of_vector)
+		return ((0, 0, 0), (x/length_of_vector, y/length_of_vector, z/length_of_vector))
 	else:
-		return (0,0)
+		return ((0, 0, 0), (0, 0, 0))
 
 def dot_product(vector1, vector2):
 	x1 = vector1[1][0] - vector1[0][0]
@@ -40,4 +40,4 @@ def cross_product(vector):
 	y2 = vector2[1][1] - vector2[1][0]
 	z1 = vector1[1][2] - vector2[2][2]
 	z2 = vector2[2][2] - vector2[1][2]
-	return ((y1*z2 - z1*y2), (x1*z2 - z1*x2), (x1*y2 - y1*x2))
+	return ((0, 0, 0), (y1*z2 - z1*y2), (x1*z2 - z1*x2), (x1*y2 - y1*x2))
