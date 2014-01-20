@@ -63,8 +63,6 @@ def send_group_message(sender_id, receiver_tupple, msg):
 def get_messages_from_friend(receiver_id, friend_id):
 	if not Users.has_key(receiver_id):
 		return None
-	#elif not Acquaintances[receiver_id].__contains__(friend_id):
-	#	return None
 	return_tupple = ()
 	for i in Messages[receiver_id]:
 		for j in i:
@@ -84,14 +82,8 @@ def get_birth_day_messages(receiver_id):
 				return_tupple += messages
 	return return_tupple
 
-def delete_message(user_id, msg_id):
-	m = get_messages_from_all_friends(user_id)
-	for messages in get_messages_from_all_friends(user_id):
-		for message in messages:
-			if message.__contains__(msg_id):
-				print message
-				print messages
-				m.remove(messages)
+#def delete_message(user_id, msg_id):
+	
 
 def delete_messages(user_id, messages_tupple):
 	for message in messages_tupple:
