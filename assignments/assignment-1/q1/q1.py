@@ -95,9 +95,11 @@ def delete_all_messages(user_id):
 	Messages[user_id] = []
 
 def delete_messages_from_friend(receiver_id, friend_id):
+	messages = ()
 	for message in Messages[receiver_id]:
-		if message.__contains__(friend_id):
-			Messages[receiver_id].remove(message)
+		if not message.__contains__(friend_id):
+			messages += message
+	Messages[receiver_id] = messages
 
 def print_all():
 	print "MESSAGES"
