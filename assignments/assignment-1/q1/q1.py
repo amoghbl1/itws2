@@ -46,9 +46,9 @@ def get_friend_of_friends(user_id):
 def send_message(sender_id, receiver_id, msg):
 	message = (sender_id, time.strftime("%D-%H:%M:%S")+datetime.datetime.now().strftime("%f"), msg, time.strftime("%D"), time.strftime("%H:%M:%S"))
 	if Messages.has_key(receiver_id):
-		Messages[receiver_id] = (Messages[receiver_id],message)
+		Messages[receiver_id] += (message,)
 	else:
-		Messages[receiver_id] = message
+		Messages[receiver_id] = (message,)
 	return True
 
 def send_group_message(sender_id, receiver_tupple, msg):
@@ -82,8 +82,10 @@ def get_birth_day_messages(receiver_id):
 				return_tupple += messages
 	return return_tupple
 
-#def delete_message(user_id, msg_id):
-	
+def delete_message(user_id, msg_id):
+	if not Users.has_key(user_id):
+		return False
+
 
 def delete_messages(user_id, messages_tupple):
 	for message in messages_tupple:
