@@ -1,6 +1,7 @@
 
-__all__ = ["add_friend", "add_friends", "glob", "make_globals", "remove_user", "get_friends", "get_friends_of_friends", "send_message", "send_group_message", "get_messages_from_friend", "get_messages_from_all_friends", "get_birth_day_messages", "delete_message", "delete_messages", "delete_all_messages", "delete_messaged_from_friend"]
-
+__all__ = ["add_friend", "add_friends", "glob", "make_globals", "remove_user", "get_friends", "get_friends_of_friends", "send_message", "send_group_message", "get_messages_from_friend", "get_messages_from_all_friends", "get_birth_day_messages", "delete_message", "delete_messages", "delete_all_messages", "delete_messaged_from_friend", "print_all"]
+import time
+import datetime
 def make_globals():
 	global Users, Acquaintances, Messages
 	Users = {}
@@ -20,30 +21,32 @@ def add_friends(user_id, friends_id):
 	return True
 
 def remove_user(user_id):
-	if not Acquaintances.has_key(user_id):
+	if not Users.has_key(user_id):
 		return False
 	else:
-		Acquaintances.pop(user_id)
+		Users.pop(user_id)
 		return True
 
 def get_friends(user_id):
 	if not Acquaintances.has_key(user_id):
 		return None
 	else:
-		return tuple(Acquaintances.values())
+		return tuple(Acquaintances[user_id])
 
-def get_friends_of_friends(user_id):
+def get_friend_of_friends(user_id):
 	return_tupple = ()
-	for friends in get_friends(user_id):
-		for fof in get_friends(friends):
-			if not fof in get_friends(friends):
-				return_tupple = return_tupple + fof
+	my_friends = get_friends(user_id)
+	for friend in my_friends:
+		fof = get_friends(friend)
+		for f in fof:
+			if f not in my_friends:
+				return_tupple += (f,)
 	return return_tupple
 
 def send_message(sender_id, receiver_id, msg):
-	message (sender_id, time.strftime("%D-%H:%M:%S"), msg, time.strftime("%D"), time.strftime("%H:%M:%S"))
+	message = (sender_id, time.strftime("%D-%H:%M:%S")+datetime.datetime.now().strftime("%f"), msg, time.strftime("%D"), time.strftime("%H:%M:%S"))
 	if Messages.has_key(receiver_id):
-		Messages[receiver_id] += message
+		Messages[receiver_id] = (Messages[receiver_id],message)
 	else:
 		Messages[receiver_id] = message
 	return True
@@ -60,20 +63,17 @@ def send_group_message(sender_id, receiver_tupple, msg):
 def get_messages_from_friend(receiver_id, friend_id):
 	if not Users.has_key(receiver_id):
 		return None
-	elif not Acquaintances[receiver_id].__contains__(friend_id):
-		return None
+	#elif not Acquaintances[receiver_id].__contains__(friend_id):
+	#	return None
 	return_tupple = ()
 	for i in Messages[receiver_id]:
 		for j in i:
 			if j.__contains__(friend_id):
-				return_tupple += j
-	return receiver_tupple
+				return_tupple += (i,)
+	return return_tupple
 
 def get_messages_from_all_friends(receiver_id):
-	return_tupple = ()
-	for friend in Acquaintances[receiver_id]:
-		return_tupple += get_messages_from_friend(receiver_id, friend)
-	return return_tupple
+	return tuple(Messages[receiver_id])
 
 def get_birth_day_messages(receiver_id):
 	birthday = Users[receiver_id][2]
@@ -85,10 +85,13 @@ def get_birth_day_messages(receiver_id):
 	return return_tupple
 
 def delete_message(user_id, msg_id):
+	m = get_messages_from_all_friends(user_id)
 	for messages in get_messages_from_all_friends(user_id):
 		for message in messages:
 			if message.__contains__(msg_id):
-				messages.remove(message)
+				print message
+				print messages
+				m.remove(messages)
 
 def delete_messages(user_id, messages_tupple):
 	for message in messages_tupple:
@@ -98,5 +101,14 @@ def delete_all_messages(user_id):
 	Messages[user_id] = []
 
 def delete_messages_from_friend(receiver_id, friend_id):
-	for messages in Messages[receiver_id]:
+	for message in Messages[receiver_id]:
+		if message.__contains__(friend_id):
+			Messages[receiver_id].remove(message)
 
+def print_all():
+	print "MESSAGES"
+	print Messages
+	print "USERS"
+	print Users
+	print "FRIENDS"
+	print Acquaintances

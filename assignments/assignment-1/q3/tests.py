@@ -1,6 +1,7 @@
 
 from contacts import create_contacts
 from contacts import add_contacts
+from contacts import update_contact_number
 from phonenum import *
 
 def test_add_multiple_contact_numbers():
@@ -27,9 +28,17 @@ def test_generic_contacts_behavior():
 	except KeyError as e:
 		assert(1)
 
+def test_update_contact():
+	c = create_contacts()
+	add_contacts(c, 'ken', "1234567890", "home")
+	add_contacts(c, 'ken', "1234567891", "home")
+	add_contacts(c, 'ken', "1234567892", "home")
+	update_contact_number(c, "ken", "1234567890", "1212121212")
+	update_contact_number(c, "ken", "1234567891", "1212121211")
+	update_contact_number(c, "ken", "1234567891", "1212121211")
+
 
 if __name__ == '__main__':
     test_generic_contacts_behavior()
     test_add_multiple_contact_numbers()
-
-
+    test_update_contact()
