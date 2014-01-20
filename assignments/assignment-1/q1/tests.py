@@ -26,4 +26,8 @@ q1.get_messages_from_all_friends("uid4")
 q1.get_birth_day_messages("uid2")
 q1.get_birth_day_messages("uid3")
 
+#commented out because message id is only obtained on runtime!
+#q1.delete_message("uid5", messageID)
+#q1.delete_messages("uid5" , messageID's tupple)
+
 q1.delete_all_messages("uid5")
