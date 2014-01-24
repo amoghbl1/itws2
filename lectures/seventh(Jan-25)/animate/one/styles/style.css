@@ -1,0 +1,16 @@
+body {
+	padding: 0px 0px 0px 0px;
+	margin: 5% 0px 0px 0px;
+}
+
+#circle-blue {
+	position: relative;
+    width: 8em;
+    height: 8em;
+    background: rgba(0, 0, 255, 0.6);
+	border-radius: 50%;
+	border-color: rgba(0, 0, 0, 0.7);
+	border-width: 1px;
+	border-style: solid;
+}
+
