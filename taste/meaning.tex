@@ -1,0 +1,49 @@
+\documentclass[10pt, a4paper]{article}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage[procnames]{listings}
+\usepackage[draft]{todonotes}   % notes showed
+\usepackage{setspace}
+\usepackage{tabularx}
+%\usepackage[pdftoolbar=false, colorlinks=false, urlcolor=blue]{hyperref}
+
+\addtolength{\oddsidemargin}{-.4in}
+\addtolength{\evensidemargin}{-.4in}
+\addtolength{\topmargin}{-0.6in}
+\addtolength{\textwidth}{0.83in}
+\addtolength{\textheight}{.6in}
+
+\renewcommand{\baselinestretch}{1.3}
+
+\begin{document}
+\title{An Exercise in Assigning Meaning to a Python Program}
+\author{M. Devi Prasad\vspace*{1.5mm}\\\texttt{dp@vlabs.ac.in}\\\texttt{deviprasad.m@iiit.ac.in},}
+\date{}
+\maketitle
+
+\definecolor{keywords}{RGB}{0, 0, 255}
+\definecolor{comments}{RGB}{0, 0, 113}
+\definecolor{red}{RGB}{160, 0, 0}
+\definecolor{green}{RGB}{0, 150, 0}
+\definecolor{lightgreen}{RGB}{220, 230, 140}
+\definecolor{lightorange}{RGB}{249, 150, 107}
+\definecolor{darkorange}{RGB}{255, 140, 95}
+%\definecolor{darkorange}{RGB}{250, 180, 100} VERY NICE COLOR!
+\definecolor{lightbrown}{RGB}{249, 203, 156}
+\definecolor{black}{RGB}{0, 0, 0}
+\definecolor{background}{RGB}{235, 235, 235}
+\definecolor{gray}{RGB}{235, 235, 235}
+
+\section{Introduction}
+
+\noindent\begin{tabular}{l}
+{\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
+\begin{lstlisting}
+def collect_proc_names(src):
+  proc_names = []
+  prev_line = None
+\end{lstlisting}}\\
+$\blacktriangle{src} = (\triangle:i, \, \square:[a_{0}, \ldots, a_{n-1}])$
+\end{tabular}\\
+
+\end{document}
