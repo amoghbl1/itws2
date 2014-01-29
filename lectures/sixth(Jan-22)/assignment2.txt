@@ -1,0 +1,34 @@
+
+(A) Implement a child window iterator for Container class.
+
+(B) Implement setFocus() and hasFocus() methods. 
+    Ensure that the following invariants hold:
+        (1) Only one window has the active focus at any given point in time.
+        (2) The AppWindow with the focus is never in STATE_MINIMIZED state.
+
+(C) Give meaningful implementation for methods/functions that currently raise 
+    NotImplementedError().
+
+(D) Define two special Button instances with the following meaning. 
+    When clicked, the OK button invokes accept() method on its 
+    Container window. On the other hand, the Cancel button, when clicked, 
+    invokes cancel() method on its Container window. The Container window 
+    should remember whether it was canceled or OKyed.
+
+(E) Define a class RadioButtonGroup that extends Container class. This new 
+    class is designed to hold instances of a class named RadioButton. One 
+    can choose only one from a group of radio buttons. By default, the first 
+    element in the group is selected. A radio button is selected  when its 
+    click() method is called.
+
+(F) Carefully think about the Container class and its semantics. 
+    What changes are required, if any, in its addChild() method, in order to 
+    handle cases where one may attempt to add DialogBox instances etc.
+
+(G) Enforce the following invariants:
+    (1) There are no cycles in the window hierarchy. 
+    (2) A child window MUST BE a part of only one parent window
+    (3) 
+
+
+
