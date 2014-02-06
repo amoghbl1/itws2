@@ -1,0 +1,104 @@
+(1) Here is a partial definition of the doubly linked list data structure. You
+are required to complete the definition as mentioned in the subquestions below:
+
+class DoublyLinkedList(object):
+    "Internal representation of a node in the doubly-lined list"
+    class Node(object):
+        def __init__(self, key, val):
+            "initialize the required fields of a node instance"
+            pass
+        
+        def __eq__(self, key):
+            "compare the content of this node with the key"
+            pass
+        
+        def val(self):
+            "return the value stored in this node"
+            pass
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+   
+    """
+    return the number of elements in the list.
+    returns a number greater than or equal to zero.
+    """
+    def length(self):
+        pass
+
+    """
+    creates a new node initialized with 'key' and 'val', and makes
+    'head' point to the new node.
+    precondition: neither 'key' nor 'val' may be None. 
+    postcondition: self.head will point to the new node.
+    """
+    def insert(self, key, val):
+        pass
+
+    """
+    searches from the 'head' of the list, the first occurrence of 'key'. 
+    when found, returns 'val' associated with the key.
+    returns None when 'key' is not in the list.
+    postcondition: <specify> 
+    """ 
+    def find(self, key):
+        pass   
+
+    """
+    removes the node, if there's one, at the 'tail' position.
+    postcondition: <specify>
+    """
+    def deleteLast(self):
+        pass
+    
+    """
+    removes the node, if there's one, at the 'head' position.
+    postcondition: <specify>
+    """
+    def deleteFirst(self):
+        pass
+
+    """
+    finds the first entry that matches 'key', and deletes it.
+    postcondition: <specify>
+    """
+    def delete(self, key):
+        pass
+
+(a) Complete the implementation of Node class.
+(b) Complete the implementation of DoublyLinkedList class.
+    Also, write the postconditions where they are left unspecified.
+(c) Write at the least four unique tests for each method of DoublyLinkedList.
+    You are required to provide adequate comments justifying each unit test.
+
+(2)
+For the DoublyLinkedList class defined in question 1, do the following:
+  (a) Develop a forward iterator that starts from the 'head' of the list and 
+      returns subsequent elements each time next() is called against it. 
+      Name this class the ForwardListIterator.
+      Note it should generate a StopIteration exception upon reaching the end.
+  (b) Equip the DoublyLinktedList class with the iterator interface. 
+      DO NOT duplicate/reproduce code for the entire class for this purpose.
+      You need to only provide/develop methods that implement the iterator
+      interface.
+  (c) Develop a reverse iterator that starts from the 'tail' of the list and
+      moves towards the 'head' each time next() is called against it.
+      Name this class the ReverseListIterator.
+  (d) Extend the DoublyLinktedList class (using inheritance) and provide a new
+      method named 'getReverseIterator' that returns an instance of the type
+      ReverseListIterator mentioned above.
+
+(3)
+(Provide a complete definition, in Python, for each of the following:
+  (a) class Rectangle that is represented by three properties: 
+      left-bottom point, width and height.
+      A function to check if two axis-aligned Rectangle instances 
+      intersect each other. (Axis-aligned rectangles have their edges parallel
+      to the Cartesian coordinate axes).
+  (b) WordIterator that iterates over the words of a text string.
+  (c) PointIterator that uses linear interpolation to enumerate
+      intermediate points of a line segment between p1 and p2, where 
+      p1 = (x1, y1) and p2 = (x2, y2). 
+      Assume a 2D Cartesian coordinate system.
+  

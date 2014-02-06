@@ -1,0 +1,30 @@
+body {
+	padding: 0px 0px 0px 0px;
+	margin: 5% 0px 0px 0px;
+}
+
+#circle-blue {
+	position: relative;
+    width: 6em;
+    height: 6em;
+    background: rgba(0, 0, 255, 0.6);
+	border-radius: 50%;
+	border-color: rgba(0, 0, 0, 0.7);
+	border-width: 1px;
+	border-style: solid;
+}
+
+#seperator {
+    margin: 2%;
+}
+
+#circle-orange {
+	position: relative;
+    width: 10em;
+    height: 10em;
+    background: rgba(255, 150, 0, 1);
+	border-radius: 50%;
+	border-color: rgba(0, 0, 0, 0.7);
+	border-width: 1px;
+	border-style: solid;
+}

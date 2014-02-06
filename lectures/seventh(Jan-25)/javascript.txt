@@ -1,0 +1,30 @@
+
+JavaScript is designed to work within an embedding environment.
+   Web browsers, Server-side sandboxes, ...
+
+JavaScript programs are highly reactive.
+   events, state, effects on the embedding context, input/output,
+   networking, AJAX, ...  
+
+JavaScript supports functions and objects.
+   prototype-based language.
+   functions are first-class entities.
+
+The structure and context of a JS program, and the execution model 
+within Web browsers.
+    The runtime environment of JS programs running within a Web browser.
+        Window object
+        Document object
+
+Window object and the global namespace
+
+Document object and the Document Object Model
+
+Three sample reactive programs:
+(These examples make use of both Window and Document objects. 
+ The examples demonstrate event handling in general. More specifically, 
+ they show how JS programs may react to changes in the environment and 
+ accept user interactions.)
+   displaying the size of a window as the window is resized.
+   displaying the mouse coordinates as the mouse moves across the window
+   using 'requestAnimationFrame' to perform periodic operations.

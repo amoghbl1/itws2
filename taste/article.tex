@@ -3,12 +3,13 @@
 \usepackage[procnames]{listings}
 \usepackage[draft]{todonotes}   % notes showed
 \usepackage{setspace}
+\usepackage{tabularx}
 %\usepackage[pdftoolbar=false, colorlinks=false, urlcolor=blue]{hyperref}
 
 \addtolength{\oddsidemargin}{-.4in}
 \addtolength{\evensidemargin}{-.4in}
 \addtolength{\topmargin}{-0.6in}
-\addtolength{\textwidth}{0.8in}
+\addtolength{\textwidth}{0.83in}
 \addtolength{\textheight}{.6in}
 
 \renewcommand{\baselinestretch}{1.3}
@@ -24,9 +25,13 @@
 \definecolor{red}{RGB}{160, 0, 0}
 \definecolor{green}{RGB}{0, 150, 0}
 \definecolor{lightgreen}{RGB}{220, 230, 140}
+\definecolor{lightorange}{RGB}{249, 150, 107}
+\definecolor{darkorange}{RGB}{255, 140, 95}
+%\definecolor{darkorange}{RGB}{250, 180, 100} VERY NICE COLOR!
+\definecolor{lightbrown}{RGB}{249, 203, 156}
 \definecolor{black}{RGB}{0, 0, 0}
-\definecolor{background}{RGB}{210, 210, 210}
-\definecolor{gray}{RGB}{230, 230, 230}
+\definecolor{background}{RGB}{235, 235, 235}
+\definecolor{gray}{RGB}{235, 235, 235}
 
 \section{Introduction}
 In this article we show the application of simple yet effective ideas of Computing Science to understand the behavior of a Python program. The motivation is to apply a small number of ``pure" ideas of Computing Science to the ``impure" settings of real world (Python) programs with the hope that this exercise yields useful insights.
@@ -113,10 +118,10 @@ Let us begin with the trivial definition of two helper functions. The \texttt{bl
     backgroundcolor=\color{background},
     stringstyle=\color{red},
     identifierstyle=\color{black},
-    procnamekeys={def}}	
+    procnamekeys={def}} 
 \noindent\begin{lstlisting}
-def block_begin(line): return line == '{\n'
-def block_end(line):   return line == '}\n'
+def open_curly(line): return line == '{\n'
+def close_curly(line):   return line == '}\n'
 \end{lstlisting}
 
 Let us now turn our attention to \texttt{collect\_fun\_names} that teases out procedure names by recognizing procedure definitions in the input text. The \texttt{src} argument of \texttt{collect\_fun\_names} is a Python file object representing the external text file. This function returns a list of procedure names found in the input. 
@@ -129,11 +134,11 @@ def collect_proc_names(src):
   prev_line = None
 
   for line in src:
-    if block_begin(line):
-      proc_name = prev_line
+    if open_curly(line):
+      pn = prev_line
       for line in src:
-        if block_end(line):
-          proc_names.append(proc_name)
+        if close_culy(line):
+          proc_names.append(pn)
           break
     else:
       prev_line = line
@@ -141,7 +146,7 @@ def collect_proc_names(src):
   return proc_names
 \end{lstlisting}
 
-In the program listing above, line 1 creates an empty list that would contain, when the program terminates, names of procedures found in the input. The \textit{for} loop on line 5 starts reading each line from the input stream \texttt{src} looking for statement blocks. Line 7 stores a potential procedure name in \texttt{fun\_name}. The code on lines 8, 9 and 10 look for the end of a statement block, and if found, insert the name of the procedure into the list of procedure names (\texttt{fun\_names}).
+In the program listing above, line 1 creates an empty list that would contain, when the program terminates, names of procedures found in the input. The \textit{for} loop on line 5 starts reading each line from the input stream \texttt{src} looking for statement blocks. Line 7 stores a potential procedure name in \texttt{pn}. The code on lines 8, 9 and 10 look for the end of a statement block, and if found, insert the name of the procedure into the list of procedure names (\texttt{proc\_names}).
 
 \subsection{The semantics of the \textit{for} statement}
 At this point we should draw the attention of the reader to an important aspect of Python programming language. The nested iteration in the listing above, represented by two \textit{for} statements on lines 5 and 8, use the same identifier - \texttt{line} - for binding successive lines from the input. This is perfectly valid in Python because the identifier \texttt{line} gets bound \textit{each time} through the iteration. This is unlike most other imperative programming languages where either it is wrong to mutate the value of the loop index or it will adversely affect iteration. In the following discussion, we will pay some more attention this particular aspect because it is an important detail for understanding our program. At an altogether different level, this discussion will highlight a serious flaw with the definition of iterator interface in Python.
@@ -168,12 +173,192 @@ Referring back to our program, it is important to note that the two \texttt{for}
 %\href{http://docs.python.org/2/reference/compound_stmts.html#the-for-statement}{\texttt{for} loop}
 
 \section{Assigning Meaning to the Program}
-\noindent
+What do we mean by assigning meaning to a program?
+
+We can imagine the meaning of a program to be various invariants and logical relations that hold among state variables of a program as the execution evolves over a large state space. This attitude leads us to one particular way of understanding how a program computes what it claims to compute. The essential idea would be to develop programs with a clear understanding of the initial conditions of the program, the structure of the expected outcome, and the rules that guide the transformation of values of various variables that constitute the state of an executing program at any given point in time.
+
+Ideally, we would like the program design to be guided by this principle. WHen it is not possible for some reason, we can use this very idea to figure out precisely how the execution of a program proceeds in its state space. With a precise knowledge of the requirements, we may attempt to find out logical relationships among state variables and states of an executing program. And this is what we wish to show in the following subsections. 
+
+\subsection{The first few cycles}
+In the card shown below, we have highlighted two sections of the program. Our idea is to find out meaningful logical propositions that relate the values of variables. This proposition as asserted to hold whenever control reaches that point in the execution of the program. Most variables used in these logical propositions come from the program. However, we will see that we ``discover" a few variables in order to explicate finer details of Python.
+
+\vspace*{10pt}\noindent\begin{tabular}{@{}ll}
+{\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
+\begin{lstlisting}
+def collect_proc_names(src):
+  proc_names = []
+  prev_line = None
+\end{lstlisting}}
+&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+  for line in src:
+\end{lstlisting}}
+& $ (i = 0 \,\wedge\, prev\_line = \bot) \,\vee\,$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+     if open_curly(line):
+\end{lstlisting}}
+&$\ \ \ (1 \le i \,\wedge\, prev\_line = src[i-1] \,\wedge\, line = src[i])$\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
+      pn = prev_line
+      for line in src:
+        if close_curly(line):
+          proc_names.append(pn)
+          break
+\end{lstlisting}}
+&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+    else:
+      prev_line = line
+\end{lstlisting}}
+& $ 0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
+%{
+%\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+%      prev_line = line
+%\end{lstlisting}}
+%& \\
+{
+\begin{lstlisting}[firstnumber=last]
+  return proc_names
+\end{lstlisting}}
+&\\
+\end{tabular}\vspace*{0.3mm}\\
+
+What will be the state of the program variables when a open curly bracket marks the beginning of a statement block? We see this condition holds when the program reaches the line 6 in the program text. The logical relation among the values of the state variables is shown in the card below:\vspace*{0.2mm}\\
+
+%
+% --------------------- THE SECOND CYCLE BEGINS HERE ------------
+%
+\vspace*{12pt}\noindent\begin{tabular}{@{}ll}
+{\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
+\begin{lstlisting}
+def collect_proc_names(src):
+  proc_names = []
+  prev_line = None
+\end{lstlisting}}&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+  for line in src:
+\end{lstlisting}}
+& $ (i = 0 \,\wedge\, prev\_line = \bot) \,\vee$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+  if open_curly(line):
+\end{lstlisting}}
+&
+$ \ \ \ (1 \le i \,\wedge\, prev\_line = src[i - 1])$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+      pn = prev_line
+\end{lstlisting}}
+&
+$ 0 \le i \le |src| \,\wedge \, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$\vspace*{-0.7pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
+      for line in src:
+        if close_curly(line):
+          proc_names.append(pn)
+          break
+\end{lstlisting}}
+%& $line = src[i]\,\wedge\,i = 0 \Rightarrow prev\_line = \bot$\\
+&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightbrown}]
+    else:
+      prev_line = line
+\end{lstlisting}}
+&$ 0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
+{
+\begin{lstlisting}[firstnumber=last]
+  return proc_names
+\end{lstlisting}}
+&\\
+\end{tabular}\\
+
+%
+% --------------------- THE SECOND CYCLE ENDS HERE ------------
+%
+
+
+\noindent\vspace*{3mm}\\\\ Developing these ideas further inside the nested loop, we see the following:\vspace*{3mm}\\\\
+%
+% --------------------- THE THiRD CYCLE BEGINS HERE ------------
+%
+
+\noindent\begin{tabular}{@{}ll}
+{\lstset{language=Python, basicstyle=\ttfamily\small, backgroundcolor=\color{gray}}
+\begin{lstlisting}
+def collect_proc_names(src):
+  proc_names = []
+  prev_line = None
+\end{lstlisting}}&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+  for line in src:
+\end{lstlisting}}
+& $(i = 0 \,\wedge\, prev\_line = \bot) \,\vee$\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+  if open_curly(line):
+\end{lstlisting}}
+&
+$\ \ \ (1 \le i \,\wedge\, prev\_line = src[i - 1])$\vspace*{-0.5pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightorange}]
+      pn = prev_line
+\end{lstlisting}}
+&
+$ 0 \le i < |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, line = src[i])$\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{gray}]
+      for line in src:
+\end{lstlisting}}
+&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
+        if close_curly(line):
+\end{lstlisting}}
+& $(i+1) \le j < |src| \,\wedge\, line = src[j]$\vspace*{-0.6pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
+          proc_names.append(pn)
+\end{lstlisting}}
+& $  (i+1) \le j < |src| \,\wedge\, src[i] = \mathtt{'\{'} \,\wedge\, src[j] = \mathtt{'\}'}$\vspace*{-0.5pt}\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{darkorange}]
+          break
+\end{lstlisting}}
+%& $ \ \ \ \ (\exists \,j.\,0 < j < i \,\wedge\, src[j] =  \mathtt{'\{'})$\\
+&\\
+{
+\begin{lstlisting}[firstnumber=last, backgroundcolor=\color{lightbrown}]
+    else:
+      prev_line = line
+\end{lstlisting}}
+&$0 \le i < |src| \,\wedge\, src[i] \ne \mathtt{'\{'}$\\
+{
+\begin{lstlisting}[firstnumber=last]
+  return proc_names
+\end{lstlisting}}
+&\\
+\end{tabular}\\
+
+
+
+%
+% --------------------- THE THiRD CYCLE ENDS HERE ------------
+%
+
+
+\subsection{And then we find a bug}
 \noindent\hspace*{-0.5em}\begin{tabular}{@{}ll@{}}
 {\noindent\lstset{language=Python, basicstyle=\ttfamily\small, numbers=left}
 \noindent\begin{lstlisting}
-def collect_fun_names(src):
-  fun_names = []
+def collect_proc_names(src):
+  proc_names = []
 \end{lstlisting}}
 &\\
 
@@ -197,9 +382,9 @@ def collect_fun_names(src):
 
 \noindent\lstset{backgroundcolor=\color{lightgreen}}
 {\begin{lstlisting}[firstnumber=last]
-      fun_name = prev_line
+      pn = prev_line
 \end{lstlisting}}
-&$line = ``\{" \,\wedge\,i = 0 \Rightarrow fun\_name = \bot $\\
+&$line = ``\{" \,\wedge\,i = 0 \Rightarrow proc\_name = \bot $\\
 
 \lstset{backgroundcolor=\color{lightgreen}}
 {\begin{lstlisting}[firstnumber=last]
@@ -209,14 +394,14 @@ def collect_fun_names(src):
 & $(i+1) \le j < N \wedge line = src[j]$\\
 \lstset{backgroundcolor=\color{lightgreen}}
 {\begin{lstlisting}[firstnumber=last]
-          fun_names.append(fun_name)
+          proc_names.append(pn)
 \end{lstlisting}}
 &$src[i] = ``\{"\,\wedge\,src[j] = ``\}"\,\wedge\,(i \le j < N)$\\
 \lstset{backgroundcolor=\color{lightgreen}}
 {\begin{lstlisting}[firstnumber=last]
           break
 \end{lstlisting}}
-& $(i = 0) \Rightarrow \bot \in fun\_names $\\
+& $(i = 0) \Rightarrow \bot \in proc\_names $\\
 
 {\noindent\hspace*{0.35em}\begin{lstlisting}[numbers=left, firstnumber=last]
     else:
@@ -224,7 +409,7 @@ def collect_fun_names(src):
 \end{lstlisting}}
 &\\
 {\noindent\hspace*{0.35em}\begin{lstlisting}[firstnumber=last]
-  return fun_names
+  return proc_names
 \end{lstlisting}}
 
 \end{tabular}
