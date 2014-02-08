@@ -1,0 +1,24 @@
+Announcements
+--------------
+Mid Sem 1 paper - Pattern and evaluation criteria
+Assignments - Feb 9, midnight
+
+
+Today's Topics
+---------------
+JSON
+Object
+Prototype
+Function
+Higher-order functions
+
+Creating Objects:
+-----------------
+JSON             - plain vanilla objects!
+new <function>() - constructor and prototype
+Object.create()  - only the prototype and not the constructor
+
+
+Object.create(null) - creates a really empty object.
+Object.create(Object.prototype) - creates a valid object.
+

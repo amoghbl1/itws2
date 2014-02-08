@@ -47,18 +47,4 @@ if __name__ == '__main__':
     assert(str(p1) == '(x: 10, y: 20)') 
     assert(str(p1) == str(p2))
     assert(repr(q) == repr(q))
-else:
-    print "Hey, I'm: ", __name__ 
-
-
-
-
-
-
-
-
-
-
-
-
 
