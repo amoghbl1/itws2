@@ -1,0 +1,20 @@
+body {
+    margin: 0px;
+    padding: 2%;
+    background-color: rgba(0, 0, 0, 0.03);
+    font-size: 1.4em;
+    font-family: "Ubuntu Mono";
+    line-height: 1.6em;
+}
+
+.active {
+    background: #268bd2;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    padding-left: 0.5em;
+}
+
+#statement_block {
+	margin-right: 50%;
+}
