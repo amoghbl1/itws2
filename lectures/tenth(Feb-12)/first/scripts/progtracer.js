@@ -20,6 +20,26 @@ function getStateUpdateFunctions()
     return [step1, step2, step3, step4, step5]
 }
 
+/*
+(function testSteps()
+{
+    var programState = {
+        x: 0,
+        y: 0,
+        result: 0,
+        toString: function() {
+            return "{ x: " + this.x + ", y: " + this.y + ", result: " + this.result + " }"
+        }
+    }
+
+    var steps = getStateUpdateFunctions()
+    for (var i = 0; i < 5; ++i) {
+        steps[i](programState)
+        console.log("    ", programState.toString())
+    }
+})()
+*/
+
 function createProgramState()
 {
     var state = {

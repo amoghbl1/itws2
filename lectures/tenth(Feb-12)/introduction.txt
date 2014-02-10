@@ -217,8 +217,60 @@ runtime context points 'this' to the global window object, and not
 commit with callbacks and event handlers. We need to take special care in
 this case.
 
+There is a simple solution to this problem, which we make use of in our code.
+For simplicity, I'm going to show the solution with the example that we are 
+currently discussing here. For an involved sample, take a look at lines 51-65
+in the second/progtracer.js. 
 
+Well, before going ahead with a detailed discussion, we can run a simple 
+test with a simple object. Take a look at the following code and execute it
+to see the effects:
 
+   var obj = {
+      x: 99,
+      increment: function() {
+          console.log(this)
+          ++this.x;
+          console.log("x = ", this.x)
+      } 
+   }
+   var f = obj.increment
+   f()
 
+What does this code print on the console? Chrome console shows the following:
+   Window {top: Window, window: Window, ....}
+   x = NaN
+
+Alas, it is clear that when we extract the function 'increment' out of 'obj',
+assign it to a local variable 'f' and invoke the function f(), 'this' refers to
+the global window object, and since 'x' is undefined in window (in this example),
+we see 'Not a Number' (NaN) error!
+
+Try the following now:
+
+   var f = obj.increment
+   f = f.bind(obj)
+   f()
+
+Surprise! you see the right output!! Each time you invoke 'f' you see the value
+of 'x' getting incremented as expected. This is nice!
+
+'bind' is a member of Function.prototype object. And the documentation at
+Mozilla developer site says "the bind() method creates a new function that, when 
+called, has its this keyword set to the provided value, with a given sequence of 
+arguments preceding any provided when the new function is called."
+
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind]
+
+In other words, when a function is bound to an object, it returns another function
+whose 'this' refers to that object, which is what we do in the snippet above.
+
+We use the same technique to bind a function with 'programState' object:
+
+    window.setTimerout(programState.executeNextStatement, 1800)
+
+This ensures that when the timer invokes the handler function, the latter is
+bound to the correct object (not window object by accident) and that we can
+continue to access the state as we need.
 
 
