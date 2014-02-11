@@ -29,3 +29,7 @@ class ReverseListIterator(object):
 			return ret.val
 		else:
 			raise StopIteration
+
+class ExtendedDoublyLinkedList(DoublyLinkedList):
+	def getReverseIterator(self):
+		return ReverseListIterator(self)
