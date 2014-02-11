@@ -8,3 +8,8 @@ for i in fli:
 	if i==None:
 		assert(0)
 	assert(1)
+rli = ReverseListIterator(a)
+for i in rli:
+	if i==None:
+		assert(0)
+	assert(1)

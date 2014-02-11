@@ -106,3 +106,8 @@ class DoublyLinkedList(object):
             prop = prop.next
         return True
         pass
+
+#Question 2
+#Assuming that the forward list iterator made there exists.
+    def getForwardListIterator(self):
+        return ForwardListIterator(self)
