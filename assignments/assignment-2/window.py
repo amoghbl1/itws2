@@ -70,11 +70,20 @@ class Container(Window):
         self.children = []
 
     def addChildWindow(self, childWindow):
-        if (isinatnce(childWindow, ChildWindow)):
-            self.children.append(childWindow)
-            return
-        raise BadArgumentError("Expecting a valid child window instance")
-        
+        if self.checkParent(childWindow):
+            if (isinstance(childWindow, ChildWindow)):
+                self.children.append(childWindow)
+                return True
+            raise BadArgumentError("Expecting a valid child window instance")
+        else:
+            raise BadArgumentError("The ChildWindow already has a parent")
+            
+
+
+    def checkParent(self, childWindow):
+        if childWindow.parent != self:
+            return False
+        return True
 
 class ChildWindow(Window):
     def __init__(self, parent, title, top_left, w, h):
@@ -88,14 +97,3 @@ class ChildWindow(Window):
 class AppWindow(Container):
     def __init__(self, title, top_left = Point(0, 0), w=40, h=40):
         Container.__init__(self, None, title, top_left, w, h)
-
-
-
-
-
-
-
-
-
-
-

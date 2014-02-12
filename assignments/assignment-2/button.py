@@ -15,7 +15,7 @@ class Button(ChildWindow):
         if parent is None or not isinstance(parent, Container):
         	raise BadArgumentError("Expecting a valid parent window")
 
-        if (value != "CANCEL") && (value != "ACCEPT"):
+        if (value != "CANCEL") and (value != "ACCEPT"):
         	raise BadArgumentError("Expecting a valid button value")
         self.value = value
         Window.__init__(self, parent, title, top_left, w, h)
