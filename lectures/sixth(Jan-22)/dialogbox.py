@@ -1,4 +1,4 @@
-from window import Window, Container, AppWindow
+from window import Window, Container, AppWindow, ChildWindow
 from point import Point
 from window import BadArgumentError
 

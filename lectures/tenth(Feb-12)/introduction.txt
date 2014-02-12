@@ -1,0 +1,276 @@
+Section 1 : Array of functions
+------------------------------
+The 'getStateUpdateFunctions' defines five inner functions that are visible only in the scope of its body. It returns an array that stores references to
+these five functions.
+
+This shows that in JavaScript functions can be tucked in data structures such
+as arrays and passed around much like any other value. This is one of the
+reasons for saying that functions are first-class objects or values in 
+JavaScript.
+
+function getStateUpdateFunctions()
+{
+    var step1 = function(state) {
+        state.x = 3
+    }
+    var step2 = function(state) {
+        state.y = 5
+    }
+    var step3 = function(state) {
+        state.result = (state.x * state.y)
+    }
+    var step4 = function(state) {
+        state.y += 1
+    }
+    var step5 = function(state) {
+        state.result *= state.x + state.y
+    }
+
+    return [step1, step2, step3, step4, step5]
+}
+
+Functions 'step1' through 'step5' appear to modify a particular state 
+variable. The functions 'step1' through 'step5' receive one argument
+named 'state'; a closer inspection of these functions reveals that the object
+'state' must have at lease three fields named 'x', 'y', and 'result'. Each of the 'stepX' function modifies some part of the state in each step of the 
+computation. 
+
+How do we call these functions? 
+It is simple. In a loop, grab the function at a specific index, and 
+call it! The following function, 'testSteps', shows one possible way to
+call these functions:
+
+function testSteps()
+{
+   var programState = {
+        x: 0,
+        y: 0,
+        result: 0,
+        toString: function() {
+            return "{ x: " + this.x + ", y: " + this.y + ", result: " + this.result + " }"
+        }
+    }
+
+    var steps = getStateUpdateFunctions()
+    for (var i = 0; i < 5; ++i) {
+        steps[i](programState)
+        console.log("    ", programState.toString())
+    }
+}
+
+Note how this function defines a local object named 'programState' wjth
+three fields - x, y, and result. It also provides implementation for
+'toString' function that JavaScript calls when we try to directly print the object. Also make a note of the local 'steps' variable that stores the 
+array of 'stepX' functions returned by getStateUpdateFunctions().
+
+When you execute 'testSteps' you should see the following output in the
+console:
+
+{ x: 3, y: 0, result: 0 }
+{ x: 3, y: 5, result: 0 }
+{ x: 3, y: 5, result: 15 }
+{ x: 3, y: 6, result: 15 }
+{ x: 3, y: 6, result: 135 }
+
+Notice how functions 'step1' through 'step5' modify 'programState' and notice
+this is the way that we wanted each function to modify only one part of the 
+state.
+
+Task for Section 1:
+Try to understand how the function 'createProgramState' works.
+
+
+Section 2: The HTML snippet that represents a program in our domain
+--------------------------------------------------------------------
+We want tot represent simple programs in HTML. Our programming language is a
+pseudo language - it really doesn't exist in the form we are imagining. 
+
+Take a look at the 'html/program.html' file. It has the following content
+model:
+    <body>
+      <div id="statement_block">
+          <div> x := 3; </div>
+          <div> y := 5; </div>
+          <div> result  = x * y; </div>
+          <div> y := y + 1; </div>
+          <div> result := result * (x + y); </div>
+      </div>
+    </body>
+
+The div with id 'statement_block' has five child div elements. Each child
+div represents a line of program in our pseudo-language!
+
+It is worthwhile to note that the step functions we discussed in the previous
+section correspond to the meaning of the statement in each div. I hope
+this makes sense now! In our solution, functions 'step1' through 'step5'
+capture the meaning of each program statement represented by individual
+div elements in the body!
+
+Isn't this cute? :)
+
+In order to "execute" this "program" all that we need do is to execute each
+'stepX' function as we visit each child div element of 'statement_block'. 
+
+Please DO NOT be confused now! The whole exercise is to feign that we are
+"interpreting" a program as the user of this Web page observes from outside.
+All that we are doing is to define a bunch of JavaScript functions that
+express the state change that would take place as the input "program" is 
+sequentially executed, one statement at a time!
+
+The following two HTML DOM calls give us an array containing references to 
+the five div elements plucked from their parent.
+
+    var block = document.getElementById('statement_block')
+    var stats = block.children
+
+We make use of this feature in our first program.
+
+-------------------------------------------------------------------------------
+
+Please refer to the contents of 'second' directory for the discussion in this
+section. We will consider fragments of JavaScript from the second version
+of the program.
+
+Section 3 - Extending the representation of the program state
+--------------------------------------------------------------
+Take a look at the following JavaScript object:
+
+    var programState = {
+        x: 0,
+        y: 0,
+        result: 0,
+        toString: function() {
+            return "{ x: " + this.x + ", y: " + this.y + ", result: " + this.result + " }"
+        }
+        stateXformers: getStateUpdateFunctions(),
+        step: 0,
+        executeNextStatement: function() {
+            this.stateXformers[this.step](this)
+            ++this.step
+        },
+    }
+
+We have added three new members to its previous definition in Section 1:
+'stateXformers' (read 'state transformers'), 'step' and 
+'executeNextStatement'. The data field 'stateXformers' represents
+an array containing five functions. In the previous section, e had already 
+seen and used 'getStateUpdateFunctions'. 
+
+The 'step' data field is incremented each time 'executeNextStatement' 
+runs. We use 'step' to remember how far we have executed our program, i.e.,
+what is the next statement to execute next! In our example, there are
+only five functions, an therefore, value of 'step' would range from 0 to 4.
+
+The function 'executeNextStatement' is interesting. When invoked, it grabs
+the next function using the following expression:
+    this.stateXformers[this.step]
+Since this sub-expression represents a function, we can call the function
+straightaway, and that's precisely what this function does!
+    
+    executeNextStatement: function() {
+        this.stateXformers[this.step](this)
+        ++this.step
+    }
+Pause for a while and convince yourselves that you MUST have all those
+references to 'this' in the code, failing which the code would produce
+execution errors.
+
+Section 3 - Using DOM Timers, event handlers and the vagaries of 'this'
+-----------------------------------------------------------------------
+DOM API provides a mechanism to asynchronously invoke JavaScript functions.
+In other words, you can arrange to call a function approximately after some
+delay. The following snippet shows its trivial usage:
+
+    function greet() {
+        console.log("Hello, world!")
+    }
+    window.setTimeout(greet, 1000)
+
+In our case, though, we want to invoke the method of an object - 
+'executeNextStatement' function in 'programState' object shown in the previous
+section (Section 2). For brevity, I will show only a portion of the object
+definition here: 
+    
+    var programState = {
+        // rest of the definition elided for brevity
+        stateXformers: getStateUpdateFunctions(),
+        step: 0,
+        executeNextStatement: function() {
+            this.stateXformers[this.step](this)
+            ++this.step
+        },
+    }
+
+If we wish to schedule a call to 'programState.executeNextStatement' after a 
+second or so, we could do the following:
+
+    window.setTimeout(programState.executeNextStatement, 1800)
+
+However, there is a serious problem with this usage. Notice that 
+'executeNextStatement' requires access to 'this' - that is, access to 
+'programState' itself. Unfortunately, JavaScript event handlers and callbacks
+DO NOT work this way. If you try to execute the code shown above, you will
+see errors that complain that 'this' actually points to the global window object, and that it CANNOT find 'this.stateXformers' and 'this.step'. In other
+words when 'executeNextStatement' is called as a timer event handler, its
+runtime context points 'this' to the global window object, and not
+'programState'. This is one of the most common mistakes that we tend to
+commit with callbacks and event handlers. We need to take special care in
+this case.
+
+There is a simple solution to this problem, which we make use of in our code.
+For simplicity, I'm going to show the solution with the example that we are 
+currently discussing here. For an involved sample, take a look at lines 51-65
+in the second/progtracer.js. 
+
+Well, before going ahead with a detailed discussion, we can run a simple 
+test with a simple object. Take a look at the following code and execute it
+to see the effects:
+
+   var obj = {
+      x: 99,
+      increment: function() {
+          console.log(this)
+          ++this.x;
+          console.log("x = ", this.x)
+      } 
+   }
+   var f = obj.increment
+   f()
+
+What does this code print on the console? Chrome console shows the following:
+   Window {top: Window, window: Window, ....}
+   x = NaN
+
+Alas, it is clear that when we extract the function 'increment' out of 'obj',
+assign it to a local variable 'f' and invoke the function f(), 'this' refers to
+the global window object, and since 'x' is undefined in window (in this example),
+we see 'Not a Number' (NaN) error!
+
+Try the following now:
+
+   var f = obj.increment
+   f = f.bind(obj)
+   f()
+
+Surprise! you see the right output!! Each time you invoke 'f' you see the value
+of 'x' getting incremented as expected. This is nice!
+
+'bind' is a member of Function.prototype object. And the documentation at
+Mozilla developer site says "the bind() method creates a new function that, when 
+called, has its this keyword set to the provided value, with a given sequence of 
+arguments preceding any provided when the new function is called."
+
+[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind]
+
+In other words, when a function is bound to an object, it returns another function
+whose 'this' refers to that object, which is what we do in the snippet above.
+
+We use the same technique to bind a function with 'programState' object:
+
+    window.setTimerout(programState.executeNextStatement, 1800)
+
+This ensures that when the timer invokes the handler function, the latter is
+bound to the correct object (not window object by accident) and that we can
+continue to access the state as we need.
+
+
