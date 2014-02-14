@@ -20,9 +20,61 @@ class Button(ChildWindow):
         self.value = value
         Window.__init__(self, parent, title, top_left, w, h)
 
+
 # Assuming that the parent of this button is going to be a dialogbox object.
     def click(self):
-    	if self.value == "ACCEPT":
-    		self.parent.accept()
-    	elif self.value == "CANCEL":
-    		self.parent.cancel()
+        if self.value == "ACCEPT":
+            clicker = OK()
+            clicker.click(self.parent)
+        elif self.value == "CANCEL":
+            clicker = Cancel()
+            clicker.click(self.parent)
+
+class OK(object):
+    def __init__(self):
+        pass
+    def click(self, par):
+        par.accept()
+
+class Cancel(object):
+    def __init__(self):
+        pass
+    def click(self, par):
+        par.cancel()
+
+
+class RadioButtonGroup(Container):
+
+    def __init__(self, parent, title, top_left, w, h):
+        assert(isinstance(top_left, (Point)))
+        Container.__init__(self, parent, title, top_left, w, h)
+        self.RadioButtons = []
+
+    def addButton(self, button):
+        self.RadioButtons.append(button)
+        self.unClickAll()
+        self.RadioButtons[0].click()
+
+    def unClickAll(self):
+        for i in self.RadioButtons:
+            i.unClick()
+
+class RadioButton(Container):
+    RADIO_ACTIVE = 0x1
+    RADIO_INACTIVE = 0x0
+    
+    def __init__(self, parent, title, top_left, w, h):
+        self.parent=parent
+        self.state = self.RADIO_INACTIVE
+        Container.__init__(self, parent, title, top_left, w, h)
+        self.parent.addButton(self)
+    
+    def click(self):
+        self.parent.unClickAll()
+        self.state = self.RADIO_ACTIVE
+    
+    def unClick(self):
+        self.state = self.RADIO_INACTIVE
+
+    def getState(self):
+        return self.state

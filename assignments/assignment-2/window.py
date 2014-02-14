@@ -49,19 +49,31 @@ class Window(object):
     #this window has no knowledge of other windows and we assume that during it's use, the designer ensures that there is no focus on other window,
     #hence the removeFocus function has been implemented in order to help achieve this
     def setFocus(self):
-        self.focus = True
+        if self.focus == False:
+            self.focus = True
+            return True
+        return False
 
     def removeFocus(self):
-        self.focus = False
+        if self.focus == True:
+            self.focus = False
+            return True
+        return False
     
-    def hasFocus():
+    def hasFocus(self):
         return self.focus
     
-    def minimize():
-        self.state = Window.STATE_MINIMIZED
+    def minimize(self):
+        if self.state != Window.STATE_MINIMIZED:
+            self.state = Window.STATE_MINIMIZED
+            return True
+        return False
 
-    def maximize():
-        self.state = Window.STATE_MAXIMIZED
+    def maximize(self):
+        if self.state != Window.STATE_MAXIMIZED:
+            self.state = Window.STATE_MAXIMIZED
+            return True
+        return False
 
 
 class Container(Window):
@@ -76,20 +88,57 @@ class Container(Window):
                 return True
             raise BadArgumentError("Expecting a valid child window instance")
         else:
-            raise BadArgumentError("The ChildWindow already has a parent")
-            
-
+            raise BadArgumentError("The ChildWindow already has a parent")        
 
     def checkParent(self, childWindow):
         if childWindow.parent != self:
             return False
         return True
 
+    def childIterator(self):
+        newIter = ChildWindowIterator(self)
+        return newIter.__iter__()
+
+    def CheckCycle(self):
+        visited = []
+        try:
+            parent = self.parent
+        except AttributeError:
+            parent = None
+        while parent != None:
+            if parent in visited:
+                return False
+            visited.append(parent)
+            try:
+                parent = parent.parent
+            except AttributeError:
+                parent = None
+        return True #means that there is no cycle
+
+    def CheckParent(self, par):
+        try:
+            parent = self.parent
+        except AttributeError:
+            parent = None
+        while parent != None:
+            if parent == par:
+                return True
+            try:
+                parent = parent.parent
+            except AttributeError:
+                parent = None
+        return False
+
+class ChildWindowIterator(object):
+    def __init__(self, container):
+        self.children = container.children
+    def __iter__(self):
+        return iter(self.children)
+
 class ChildWindow(Window):
     def __init__(self, parent, title, top_left, w, h):
         if parent is None or not isinstance(parent, Container):
             raise BadArgumentError("Expecting a valid parent window instance")
-
         Window.__init__(self, parent, title, top_left, w, h)
 
 
