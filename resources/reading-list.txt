@@ -1,0 +1,12 @@
+
+JavaScript Guide - Mozilla Developer Network
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide
+
+JavaScript Garden
+http://bonsaiden.github.io/JavaScript-Garden/
+
+Eloquent JavaScript
+http://eloquentjavascript.net/
+
+Learning JavaScript Design Patterns
+http://addyosmani.com/resources/essentialjsdesignpatterns/book/
